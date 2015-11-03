@@ -636,10 +636,10 @@ def _virtual(osdata):
         if os.path.isfile('/proc/1/cgroup'):
             try:
                 with salt.utils.fopen('/proc/1/cgroup', 'r') as fhr:
-                    if ':/lxc/' in fhr.read():
+                    cgroups = fhr.read()
+                    if ':/lxc/' in cgroups or ':/system.slice/lxc-' in cgroups:
                         grains['virtual_subtype'] = 'LXC'
-                with salt.utils.fopen('/proc/1/cgroup', 'r') as fhr:
-                    if ':/docker/' in fhr.read():
+                    elif ':/docker/' in cgroups or ':/system.slice/docker-' in cgroups:
                         grains['virtual_subtype'] = 'Docker'
             except IOError:
                 pass
